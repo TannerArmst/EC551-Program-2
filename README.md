@@ -31,7 +31,183 @@ python hls.py examples/assignment.eqn --out build/demo --mode constrained-asap -
 python scripts/reference.py examples/assignment.eqn --manifest build/demo/manifest.json --value A=5 --value B=3
 ```
 
-If Icarus is unavailable, use Vivado **Run Simulation → Run Behavioral Simulation** with the generated `testbench.v` as a simulation-only source and `testbench` as the simulation top. A Vivado simulation PASS was reported for this project. The compiler works without Icarus; `--simulate` specifically requires `iverilog` and `vvp`.
+If Icarus is unavailable, use Vivado **Run Simulation → Run Behavioral Simulation** with the generated `testbench.v` as a simulation-only source and `testbench` as the simulation top. A Vivado simulation PASS was reported for this project. The compiler works without Icarus; `
+
+## SYNOPSIS
+
+```
+python3 hls.py FILE [OPTIONS]
+python3 hls.py --dynamic-input ["EQUATIONS"] [OPTIONS]
+
+OPTIONS:
+  [--step]
+  [--mode asap|constrained-asap|alap|constrained-alap|custom]
+  [--adders N] [--subtractors N] [--multipliers N] [--latency N]
+  [--width N] [--export-ssa [FILE]]
+  [--const NAME=VALUE]... [--switch-inputs NAME[,NAME]]
+  [--vectors N] [--seed N] [--simulate] [--out DIR]
+```
+### DESCRIPTION
+
+**hls.py** reads up to 20 sequential equations and runs this flow:
+
+1. **Parse** the equations, from *FILE* or from **--dynamic-input** (on the command line or typed at the prompt).
+2. **Convert to SSA.** Every assignment creates a new version of the variable (`X_1`, `X_2`, …). An input that is read before it is assigned becomes version `_0` (`A_0`).
+3. **Build the DAG.** There is one node per operation, and the edges are data dependencies.
+4. **Schedule** each operation into a cycle, using one of five modes (see **SCHEDULING MODES**).
+5. **Bind** operations to functional units. The *k*-th operation of a type in a cycle runs on unit *k*, so the design instantiates the largest number of units of each type used in any one cycle.
+6. **Emit Verilog-2001.** The output is:
+   - a sequencer FSM (`hls_control`);
+   - a datapath with operand muxes and one register per SSA value (`hls_datapath`);
+   - a core wrapper (`hls_core`);
+   - a Nexys A7 board runtime with START, STEP and RUN buttons (`board_top.v`);
+   - a self-checking testbench.
+
+Each operation takes one *enabled* cycle. The design advances only when STEP or RUN is pressed, so data can be stepped through the datapath one cycle at a time.
+
+
+### OPTIONS
+
+#### Input
+
+**FILE**
+: Text file of equations. Required unless **--dynamic-input** is given; giving both is an error.
+
+**-dynamic-input** ["*EQUATIONS*"], **--dynamic-input** ["*EQUATIONS*"]
+: Take the equations from the command line instead of a file, for example `--dynamic-input "X = A + B; Y = X * 2"`. With no equations after it, prompt for them. See **DYNAMIC INPUT**.
+
+**--step**
+: Walk through the flow one stage at a time. See **STEP MODE**.
+
+#### Scheduling
+
+**--mode** *MODE*
+: One of `asap`, `constrained-asap`, `alap`, `constrained-alap`, `custom`. Default: `constrained-asap`.
+
+**--adders** *N*, **--subtractors** *N*, **--multipliers** *N*
+: Maximum units of each type per cycle in the constrained modes and `custom`. Default 1 each. A limit of 0 is an error if the program needs that unit type. The unconstrained modes ignore these flags and print a note to stderr.
+
+**--latency** *N*
+: Latency bound in cycles (1–4095). It must be at least the critical-path length.
+  - Forward modes treat *N* as a maximum. If the schedule needs more cycles, the tool stops with an error.
+  - ALAP modes place the last operation in cycle *N*, so earlier cycles may be idle.
+
+#### Hardware
+
+**--width** *N*
+: Datapath width in bits, 4–64. Default 16. Arithmetic is unsigned modulo 2^*N*.
+
+**--const** *NAME*=*VALUE*
+: Hardcode the external input *NAME* on the board. *VALUE* may be decimal or `0x` hex and must fit in **--width** bits. Repeat the option for several inputs.
+
+**--switch-inputs** *NAME*[,*NAME*]
+: Choose zero, one or two external inputs to read from the switches. The first is read from `SW[3:0]`, the second from `SW[7:4]`. Default: the first two inputs that are not given with **--const**. Any other input is hardcoded to 1.
+
+#### Output and verification
+
+**--export-ssa** [*FILE*]
+: Also write the SSA form to *FILE*. With no *FILE*, print it to standard output. `ssa.txt` is always written to **--out** as well.
+
+**--out** *DIR*
+: Output directory. Default `build/demo`.
+
+**--vectors** *N*
+: Number of random test vectors in the testbench, 1–1000. Default 24. Three fixed vectors are always added (see **VERIFICATION**).
+
+**--seed** *N*
+: Random seed for the test vectors. Default 551.
+
+**--simulate**
+: After generating, compile and run the testbench with Icarus Verilog (`iverilog -g2005`, `vvp`) in *DIR*.
+
+### INPUT FORMAT
+
+```
+DEST = ARG OP ARG [;]
+```
+
+| Element | Rule |
+|---|---|
+| *DEST* | identifier: `[A-Za-z_][A-Za-z_0-9]*` |
+| *ARG* | identifier, decimal constant (`12`) or hex constant (`0x1F`) |
+| *OP* | `+`, `-` or `*` (one operator per equation) |
+| Comments | `#` or `//` to end of line |
+| Blank lines | ignored |
+| Limit | 20 equations |
+
+Both operands are read before *DEST* is updated, so `X = X + 1` uses the old `X`.
+
+Example:
+
+```
+X = A + B
+Y = X + A
+Z = X - B
+Q = B * Z
+X = Q + Y      # reassignment -> X_2
+R = X * 2
+```
+
+### DYNAMIC INPUT
+
+**--dynamic-input** takes the equations instead of a file, in one of two ways.
+
+#### On the command line
+
+Put the equations in double quotes straight after the option:
+
+```
+$ python3 hls.py --out build/sharing --const C=2 --const D=1 --switch-inputs A,B \
+      -dynamic-input "P=A+B; R=C+D ; S=P+R; T=C+D; U=P*T;V=S+U;Q=V-T"
+7 operations; 7 cycles; FUs={'add': 1, 'sub': 1, 'mul': 1}; output=build/sharing
+```
+
+- The quotes are needed so the shell passes the equations as one argument. The shell removes them before `hls.py` sees the text; quotes that are still present (escaped as `\"...\"`) are stripped.
+- Equations are separated by `;` or new lines inside the quotes.
+- If more than 20 are given, the first 20 are used and the tool says how many were ignored.
+- The equations must come straight after the option. A file name in that position is reported as an error, because the tool can't take a file and **--dynamic-input** together.
+
+#### At the prompt
+
+With nothing after **--dynamic-input** (it is the last argument, or the next argument is another option), the tool prompts for the equations:
+
+```
+$ python3 hls.py --dynamic-input --mode custom
+Enter up to 20 equations, separated by ; or new lines.
+Start the list with " and end it with " , e.g.  "X = A + B; Y = X * 2"
+> "X = A + B; Y = X + A
+... Z = X - B
+... Q = B * Z; X = Q + Y; R = X * 2"
+6 operations; 5 cycles; FUs={'add': 1, 'sub': 1, 'mul': 1}; output=build/demo
+```
+How input is read:
+
+- **Opening quote:** the list must start with `"`. If the first line doesn't, the tool asks again.
+- **Separators:** equations are separated by `;` or new lines, in any mix, across any number of lines.
+- **Closing quote:** the list ends at the closing `"`. Any text after it is ignored, and the tool says so.
+- **20-equation limit:** once 20 equations have been entered, the tool continues without waiting for the closing `"`. If more than 20 are typed on one line, the first 20 are used.
+- **End of input:** if input ends (Ctrl-D, or end of piped input) before the closing `"`, the equations entered so far are used.
+
+The equations are then processed exactly like a file: the same parser and the same 20-equation limit.
+
+### STEP MODE
+
+With **--step**, the tool prints each stage of the flow and waits for **Enter** before the next one:
+
+1. **Original input:** the equations, with comments and blank lines removed.
+2. **SSA:** the renamed statements and the SSA input names.
+3. **DAG:** each node, its operation, and the nodes it depends on.
+4. **Schedule:** each cycle's operations with their functional unit (`[add0]`), idle cycles, the latency, and the units instantiated.
+
+After the last pause, the files are written. **--step** can be combined with any other option, including **--dynamic-input** and **--simulate**.
+
+```
+=== DAG ===
+(node: operation   <- nodes it depends on)
+n0: X_1 = A_0 + B_0   <- inputs only
+n1: Y_1 = X_1 + A_0   <- n0
+...
+[step] DAG done. Press En
 
 ## Organization
 

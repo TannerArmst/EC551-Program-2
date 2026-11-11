@@ -459,9 +459,87 @@ def simulate(out):
     subprocess.run(['vvp','sim.vvp'],cwd=out,check=True)
 
 
+MAX_EQUATIONS = 20
+
+
+def read_dynamic_input(given=None):
+    """Get the equations for --dynamic-input. Equations are separated by ';' or a
+    new line, and at most 20 are used. Returns them as text, one per line, ready
+    for parse().
+    given = the text typed after --dynamic-input on the command line, e.g.
+            --dynamic-input "X = A + B; Y = X * 2". The shell removes the quotes;
+            any quotes still present are stripped.
+    given = None: prompt for the equations. The list must start with a double
+            quote (") and end with a closing double quote; reading also stops on
+            its own once 20 equations have been entered."""
+    if given is not None:
+        text = given.strip()
+        if text.startswith('"'):
+            text = text[1:]
+        if text.endswith('"'):
+            text = text[:-1]
+        if text.strip() and '=' not in text:
+            raise HLSError(f'--dynamic-input expects equations such as "X = A + B; Y = X * 2", got {given!r}; '
+                           'to read a file, give its name without --dynamic-input')
+        eqs = [e.strip() for e in re.split(r'[;\n]', text) if e.strip()]
+        if len(eqs) > MAX_EQUATIONS:
+            print(f'(only the first {MAX_EQUATIONS} equations are used; {len(eqs) - MAX_EQUATIONS} ignored)')
+        return '\n'.join(eqs[:MAX_EQUATIONS]) + '\n'
+    print(f'Enter up to {MAX_EQUATIONS} equations, separated by ; or new lines.')
+    print('Start the list with " and end it with " , e.g.  "X = A + B; Y = X * 2"')
+    text = ''
+    while True:
+        try:
+            line = input('> ' if not text else '... ')
+        except EOFError:                                  # Ctrl-D / end of piped input
+            print('\n(end of input reached without a closing ")')
+            break
+        if not text:                                      # first line must open with "
+            if not line.strip():
+                continue
+            if not line.lstrip().startswith('"'):
+                print('The list must start with " - please try again.')
+                continue
+            line = line.lstrip()[1:]
+        text += line + '\n'
+        body = text.split('"')[0]
+        count = len([e for e in re.split(r'[;\n]', body) if e.strip()])
+        if '"' in text:
+            if text.split('"', 1)[1].strip():
+                print('(text after the closing " was ignored)')
+            break
+        if count >= MAX_EQUATIONS:
+            print(f'({MAX_EQUATIONS} equations entered - continuing without the closing ")')
+            break
+    eqs = [e.strip() for e in re.split(r'[;\n]', text.split('"')[0]) if e.strip()]
+    if len(eqs) > MAX_EQUATIONS:
+        print(f'(only the first {MAX_EQUATIONS} equations are used; {len(eqs) - MAX_EQUATIONS} ignored)')
+    return '\n'.join(eqs[:MAX_EQUATIONS]) + '\n'
+
+
+def step_through(enabled, title, lines):
+    """--step: print one stage of the flow under a heading, then wait for Enter
+    before the next stage. Does nothing when --step is not given."""
+    if not enabled:
+        return
+    print(f'\n=== {title} ===')
+    print('\n'.join(lines))
+    try:
+        input(f'\n[step] {title} done. Press Enter to continue...')
+    except EOFError:                                      # no more input: keep going
+        print()
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('input', type=Path)
+    ap.add_argument('input', type=Path, nargs='?', help='equations file (omit when using --dynamic-input)')
+    ap.add_argument('-dynamic-input', '--dynamic-input', dest='dynamic_input', nargs='?', const=True,
+                    metavar='"EQUATIONS"',
+                    help='give the equations on the command line instead of a file, e.g. '
+                         '--dynamic-input "X = A + B; Y = X * 2"; with no equations after it, '
+                         'prompt for them')
+    ap.add_argument('--step', action='store_true',
+                    help='walk through the flow: show input, SSA, DAG and schedule, pausing for Enter after each')
     ap.add_argument('--out',type=Path,default=Path('build/demo'))
     ap.add_argument('--mode',choices=MODES,default='constrained-asap')
     ap.add_argument('--adders',type=int,default=1)
@@ -476,8 +554,21 @@ def main(argv=None):
     ap.add_argument('--seed',type=int,default=551)
     ap.add_argument('--simulate',action='store_true')
     args = ap.parse_args(argv)
+    if (args.dynamic_input is not None) == (args.input is not None):
+        ap.error('give an equations file or --dynamic-input, but not both')
     try:
-        p = parse(args.input.read_text())
+        if args.dynamic_input is None:
+            text = args.input.read_text()
+        else:
+            text = read_dynamic_input(None if args.dynamic_input is True else args.dynamic_input)
+        p = parse(text)
+        step_through(args.step, 'Original input',
+                     [l for l in (r.split('#', 1)[0].split('//', 1)[0].strip() for r in text.splitlines()) if l])
+        step_through(args.step, 'SSA', p.ssa().splitlines() +
+                     [f'(inputs: {", ".join(p.inputs) or "none"})'])
+        step_through(args.step, 'DAG', ['(node: operation   <- nodes it depends on)'] +
+                     [f'n{n.id}: {n.dst} = {n.a} {n.op} {n.b}   <- {", ".join(f"n{d}" for d in n.deps) or "inputs only"}'
+                      for n in p.nodes])
         constants = {}
         for entry in args.const:
             name,value = entry.split('=',1)
@@ -491,6 +582,15 @@ def main(argv=None):
         if args.mode in ('asap','alap') and caps != dict(add=1,sub=1,mul=1):
             print('Note: unconstrained mode ignores resource flags.',file=sys.stderr)
         times,length,caps = schedule(p,args.mode,caps,args.latency)
+        if args.step:
+            binding, peaks = bind(p, times)
+            rows = []
+            for c in range(1, length+1):
+                ops = [f'{n.dst} = {n.a} {n.op} {n.b} [{binding[n.id][0]}{binding[n.id][1]}]'
+                       for n in p.nodes if times[n.id] == c]
+                rows.append(f'cycle {c}: ' + (' | '.join(ops) or '(idle)'))
+            rows.append(f'latency {length} cycles; functional units instantiated: {peaks}')
+            step_through(True, f'Schedule ({args.mode})', rows)
         manifest = emit(p,times,length,caps,args.mode,args.width,args.out,constants,selected,args.seed,args.vectors)
         if args.export_ssa == '-':
             print(p.ssa(),end='')
