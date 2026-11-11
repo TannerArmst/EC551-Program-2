@@ -1,0 +1,215 @@
+test_bound_and_disabled_resource_failures (test_hls.CompilerTests.test_bound_and_disabled_resource_failures) ... ok
+test_custom_prioritizes_critical_path (test_hls.CompilerTests.test_custom_prioritizes_critical_path) ... ok
+test_exact_schedules (test_hls.CompilerTests.test_exact_schedules) ... ok
+test_external_first_read_is_not_forward_dependency (test_hls.CompilerTests.test_external_first_read_is_not_forward_dependency) ... ok
+test_generated_mapping_and_input_validation (test_hls.CompilerTests.test_generated_mapping_and_input_validation) ... ok
+test_parser_grammar_and_errors (test_hls.CompilerTests.test_parser_grammar_and_errors) ... ok
+test_random_programs_independent_execution (test_hls.CompilerTests.test_random_programs_independent_execution) ... ok
+test_ssa_reassignment_and_self_read (test_hls.CompilerTests.test_ssa_reassignment_and_self_read) ... ok
+test_unsigned_boundaries (test_hls.CompilerTests.test_unsigned_boundaries) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.090s
+
+OK
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:413: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:413: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:413: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:413: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:413: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:373: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:373: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:373: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:373: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:373: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:669: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 936000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:669: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:669: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:517: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:661: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:757: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:661: $finish called at 1176000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:757: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:757: $finish called at 1416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1693: $finish called at 2616000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1837: $finish called at 2616000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2285: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2197: $finish called at 3096000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2413: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2197: $finish called at 3096000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2557: $finish called at 3816000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2557: $finish called at 3816000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1293: $finish called at 1816000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1261: $finish called at 1816000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2221: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2349: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2661: $finish called at 3736000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1429: $finish called at 2216000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2197: $finish called at 3096000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1549: $finish called at 2216000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2197: $finish called at 3096000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2221: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:3357: $finish called at 4696000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2349: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2893: $finish called at 4056000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2893: $finish called at 4056000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1589: $finish called at 2216000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2429: $finish called at 3416000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1469: $finish called at 2216000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:2197: $finish called at 3096000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:1965: $finish called at 2776000 (1ps)
+VCD info: dumpfile wave.vcd opened for output.
+PASS: all transactions, cycle registers, shared FUs, stalls, reset and restart
+testbench.v:582: $finish called at 1176000 (1ps)
+PASS: board startup, debounce, hold, input capture, step, run, selectors, reset
+/workspace/scratch/7c588e0584ac/ec551_hls/tests/board_testbench.v:67: $finish called at 5456000 (1ps)
+PASS: Python tests, 66 generated RTL simulations, board integration, both board wrappers
