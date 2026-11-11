@@ -1,0 +1,2 @@
+# Python 3.10+ standard library only. No pip dependencies for the compiler/tests.
+# Optional external executables: Icarus Verilog (iverilog/vvp), Yosys, Graphviz.
