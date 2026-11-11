@@ -1,0 +1,5 @@
+# Example from the assignment. A=5, B=3 -> X=8, Y=13, Z=5, Q=15.
+X = A + B
+Y = X + A
+Z = X - B
+Q = B * Z

@@ -1,0 +1,9 @@
+# A=5 B=3; C=2 D=1 are hardcoded for board demo.
+# P=8 R=3 S=11 T=2 U=16 V=27 Q=25.
+P = A + B
+R = C + D
+S = P + R
+T = C * D
+U = P * T
+V = S + U
+Q = V - T

@@ -1,0 +1,6 @@
+P = A + B
+R = A + C
+S = B + C
+T = P * R
+U = R * S
+V = T + U
