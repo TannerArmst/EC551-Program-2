@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.vcd
+*.vvp
+*.jou
+*.log
+.xil/
+fpga_build/
